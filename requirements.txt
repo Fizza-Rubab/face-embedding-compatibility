@@ -1,0 +1,17 @@
+# Core: alignment + evaluation + figures (lightweight, CPU-only)
+numpy
+scipy
+scikit-learn
+pandas
+matplotlib
+seaborn
+tqdm
+
+# Embedding extraction only (embed_*.py) -- pulls in the deep models.
+# Not needed if you already have embeddings/<dataset>/<model>.npy.
+torch          # also required by the optional NeuralAlignment baseline in methods.py
+torchvision
+transformers
+huggingface_hub
+Pillow
+opencv-python

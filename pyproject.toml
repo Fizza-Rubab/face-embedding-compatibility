@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cfe"
+version = "0.1.0"
+description = "Compatibility of Face Embeddings Across Deep Neural Networks (IJCB 2026)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+# Core: alignment + evaluation + analysis. Embedding extraction additionally
+# needs torch/transformers/etc. -- see requirements.txt.
+dependencies = [
+    "numpy",
+    "scipy",
+    "scikit-learn",
+    "pandas",
+    "matplotlib",
+    "seaborn",
+    "tqdm",
+]
+
+[tool.setuptools]
+packages = ["cfe"]

@@ -1,0 +1,28 @@
+# Data, weights, and generated artifacts are NOT tracked (regenerate them).
+data/
+embeddings/
+results/
+checkpoints/
+.cache/
+logs/
+
+# Large binaries
+*.npy
+*.npz
+*.pt
+*.pth
+*.onnx
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.ipynb_checkpoints/
+.venv/
+env/
+
+# OS / editor
+.DS_Store
+*.swp
