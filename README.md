@@ -8,8 +8,7 @@ We ask whether independently trained face and foundation models encode facial
 identity in geometrically compatible ways. Treating embeddings as point clouds,
 we learn **simple linear maps** (Procrustes, Linear least-squares, Ridge) between
 one model's embedding space and another's, and show that these low-capacity maps
-recover cross-model identification and verification — taking Rank-1 accuracy from
-near-chance to high across both domain-specific and foundation models.
+recover cross-model identification and verification.
 
 ---
 
@@ -22,11 +21,6 @@ Code to reproduce the experiments and analyses in the paper:
 3. **Evaluate** cross-model identification and verification, intra- and cross-dataset (`experiments/`).
 4. **Analyze** the resulting compatibility structure — hierarchy, source/sink
    asymmetry, data-efficiency, RSA/CKA (`analysis/`).
-
-> **Note on data.** Precomputed embeddings are **not** shipped (they are large and
-> tied to specific model checkpoints). The pipeline regenerates them from public
-> datasets and public model weights. The alignment/evaluation code is pure
-> NumPy/scikit-learn and runs on CPU.
 
 ---
 
