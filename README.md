@@ -61,9 +61,6 @@ pip install -e .                 # installs the `cfe` package + core deps
 pip install -r requirements.txt  # extra deps for embedding extraction (torch, transformers, …)
 ```
 
-`pip install -e .` makes `import cfe` work from anywhere. **Run all scripts from the
-repository root** so the repo-relative data paths (`embeddings/`, `results/`, …) resolve.
-
 ---
 
 ## Datasets
