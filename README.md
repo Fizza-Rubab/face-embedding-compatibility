@@ -59,8 +59,7 @@ conda create -n cfe python=3.11 -y
 conda activate cfe
 pip install -e .                 # the `cfe` package + core deps
 
-# Install torch matched to your CUDA before the rest (needed only for extraction).
-# Example for CUDA 12.6 (works on V100/T4/A100); pick the index for your GPU:
+# Install torch matched to your CUDA version before the rest (needed only for extraction).
 pip install torch==2.9.1 torchvision==0.24.1 --index-url https://download.pytorch.org/whl/cu126
 
 pip install -r requirements.txt  # transformers, etc. (torch already satisfied above)
@@ -167,13 +166,9 @@ algo.fit(A_train, B_train)        # learn map from model-A space to model-B spac
 B_hat = algo.transform(A_test)    # align held-out A embeddings into B's space
 ```
 
-Center embeddings on **training** statistics only (the scripts handle this) to avoid
-test-identity leakage. `CCAAlignment` and `NeuralAlignment` are also provided as
-baselines; `NeuralAlignment` is the only method that requires PyTorch.
-
 ---
 
-## Reproducing paper artifacts (quick map)
+## Scripts and Analysis
 
 | Paper artifact | Script(s) |
 |---|---|
@@ -183,8 +178,7 @@ baselines; `NeuralAlignment` is the only method that requires PyTorch.
 | Dendrogram + source/sink asymmetry | `analysis/hierarchy.py` |
 | RSA/CKA, non-linear maps, Ridge-α (suppl.) | `analysis/rsa_cka.py`, `analysis/quadratic_maps.py`, `analysis/ridge_alpha.py` |
 
-Metrics for the tables are the JSON/CSV files each experiment writes under `results/`
-(the paper's LaTeX table/figure formatting scripts are not included).
+Metrics for the tables are the JSON/CSV files each experiment writes under `results/`.
 
 ---
 
