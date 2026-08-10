@@ -18,7 +18,7 @@ os.environ.setdefault("HF_HOME", os.path.join(CACHE, "huggingface"))
 from concurrent.futures import ProcessPoolExecutor
 from PIL import Image
 
-CROP_SIZE = 112          # matches the FR encoders' input
+CROP_SIZE = 160          # paper uses 160x160 LFW crops (encoders resize internally)
 CROP_FRAC = 0.60         # central 150px of the 250px funneled frame
 OUT_ROOT = "./data/lfw_cropped"
 

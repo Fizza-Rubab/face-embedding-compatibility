@@ -21,8 +21,13 @@ def all_pairs(models, include_self=False):
 
 
 # All-to-all within each family. Main text shows representative pairs; the rest
-# go in the supplement.
+# go in the supplement. Set CFE_MODELS="clip,align,..." to restrict the pair set
+# to models you've actually extracted (useful for partial runs).
 DEFAULT_PAIRS = all_pairs(FACE_MODELS) + all_pairs(FOUNDATION_MODELS)
+_sel = os.environ.get("CFE_MODELS")
+if _sel:
+    _keep = {s.strip() for s in _sel.split(",") if s.strip()}
+    DEFAULT_PAIRS = [(a, b) for (a, b) in DEFAULT_PAIRS if a in _keep and b in _keep]
 MAIN_TEXT_PAIRS = [
     ("arcface", "adaface"), ("adaface", "kprpe"), ("kprpe", "magface"),
     ("clip", "align"), ("blip2", "llava"), ("dinov2", "googlevit"),
@@ -37,7 +42,7 @@ CKPT_DIR = os.environ.get("CFE_CKPT_DIR", "checkpoints")
 
 DATASET_IMG_DIRS = {
     "cfp": "data/cfp/Data/Images",
-    "lfw": "data/lfw/lfw-deepfunneled_cropped_160all",
+    "lfw": "data/lfw_cropped",              # produced by extraction/crop_lfw.py
     "webface": "data/webface/casia-webface-5",
 }
 

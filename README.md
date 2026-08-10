@@ -57,9 +57,17 @@ results/       # generated: per-experiment JSON/CSV outputs
 ```bash
 conda create -n cfe python=3.11 -y
 conda activate cfe
-pip install -e .                 # installs the `cfe` package + core deps
-pip install -r requirements.txt  # extra deps for embedding extraction (torch, transformers, …)
+pip install -e .                 # the `cfe` package + core deps
+
+# Install torch matched to your CUDA before the rest (needed only for extraction).
+# Example for CUDA 12.6 (works on V100/T4/A100); pick the index for your GPU:
+pip install torch==2.9.1 torchvision==0.24.1 --index-url https://download.pytorch.org/whl/cu126
+
+pip install -r requirements.txt  # transformers, etc. (torch already satisfied above)
 ```
+
+If you only run the alignment/analysis on existing embeddings, you can skip torch
+and `requirements.txt` and just `pip install -e .`.
 
 ---
 
@@ -71,7 +79,7 @@ Each dataset is expected as `<root>/<identity>/<image>` (CFP additionally nests 
 | Dataset | Key | Default path | Env override |
 |---|---|---|---|
 | CFP (Celebrities in Frontal-Profile) | `cfp` | `data/cfp/Data/Images` | `CFE_CFP_DIR` |
-| LFW (Labeled Faces in the Wild) | `lfw` | `data/lfw/lfw-deepfunneled_cropped_160all` | `CFE_LFW_DIR` |
+| LFW (Labeled Faces in the Wild) | `lfw` | `data/lfw_cropped` (from `crop_lfw.py`) | `CFE_LFW_DIR` |
 | CASIA-WebFace | `webface` | `data/webface/casia-webface-5` | `CFE_WEBFACE_DIR` |
 
 Paper protocol: CFP uses the 10 frontal images/identity (5,000 images); LFW is

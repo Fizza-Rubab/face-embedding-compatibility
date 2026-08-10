@@ -4,13 +4,15 @@ Models are loaded lazily on first use. The CVLface face models need HF_TOKEN;
 MagFace needs its repo on PYTHONPATH; foundation models are public.
 """
 import os
+# Point the HF cache at the repo (scratch) BEFORE importing transformers, which
+# freezes its cache path on import. Otherwise it defaults to ~/.cache/huggingface.
+os.environ.setdefault("HF_HOME", os.environ.get("CFE_CACHE_DIR", ".cache"))
+
 import numpy as np
 import torch
 from torchvision import transforms as T
 
 from cfe.model_loaders import load_model_by_repo_id, load_magface_model
-
-os.environ.setdefault("HF_HOME", os.environ.get("CFE_CACHE_DIR", ".cache"))
 
 HF_TOKEN = os.environ.get("HF_TOKEN")
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -32,6 +34,18 @@ def _once(key, builder):
     return _CACHE[key]
 
 
+def _image_features(out):
+    # transformers <5 returns a tensor from get_image_features; 5.x returns a
+    # ModelOutput whose projected features are in pooler_output / image_embeds.
+    if torch.is_tensor(out):
+        return out
+    for attr in ("image_embeds", "pooler_output"):
+        v = getattr(out, attr, None)
+        if v is not None:
+            return v
+    raise TypeError(f"unexpected get_image_features output: {type(out)}")
+
+
 # --- Foundation models ---
 def embed_clip(imgs):
     from transformers import CLIPProcessor, CLIPModel
@@ -40,7 +54,7 @@ def embed_clip(imgs):
         CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(DEVICE).eval()))
     inputs = proc(images=imgs, return_tensors="pt").to(DEVICE)
     with torch.no_grad():
-        emb = model.get_image_features(**inputs)
+        emb = _image_features(model.get_image_features(**inputs))
     return emb.float().cpu().numpy()
 
 
@@ -51,7 +65,7 @@ def embed_align(imgs):
         AlignModel.from_pretrained("kakaobrain/align-base").to(DEVICE).eval()))
     inputs = proc(images=imgs, return_tensors="pt").to(DEVICE)
     with torch.no_grad():
-        emb = model.get_image_features(**inputs)
+        emb = _image_features(model.get_image_features(**inputs))
     return emb.float().cpu().numpy()
 
 
