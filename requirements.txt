@@ -1,17 +1,27 @@
-# Core: alignment + evaluation + figures (lightweight, CPU-only)
-numpy
-scipy
-scikit-learn
-pandas
-matplotlib
-seaborn
-tqdm
+# Pinned to a known-good set (tested on Linux, Python 3.10/3.11, NVIDIA V100).
 
-# Embedding extraction only (embed_*.py) -- pulls in the deep models.
+# Core: alignment + evaluation + analysis (CPU-only, lightweight)
+numpy==2.2.6
+scipy==1.13.1
+scikit-learn==1.7.2
+pandas==2.3.3
+matplotlib==3.10.8
+seaborn==0.13.2
+tqdm==4.67.1
+
+# Embedding extraction only (extraction/embed_*.py) -- pulls in the deep models.
 # Not needed if you already have embeddings/<dataset>/<model>.npy.
-torch          # also required by the optional NeuralAlignment baseline in methods.py
-torchvision
-transformers
-huggingface_hub
-Pillow
-opencv-python
+#
+# transformers is pinned to <5: the 5.x API rewrite changes several model
+# outputs (e.g. get_image_features) and breaks the extractors as written.
+transformers==4.57.3
+huggingface_hub==0.36.0
+Pillow==12.2.0
+kagglehub                # dataset download helpers (extraction/crop_lfw.py, README)
+
+# torch/torchvision must match your CUDA build. The pins below work on CUDA 12.6;
+# install them from the matching PyTorch index for your GPU, e.g.:
+#   pip install torch==2.9.1 torchvision==0.24.1 --index-url https://download.pytorch.org/whl/cu126
+# (Newer torch builds, e.g. cu130, dropped kernels for older GPUs like the V100.)
+torch==2.9.1
+torchvision==0.24.1
