@@ -9,7 +9,7 @@ import json
 CONFIG = {
     'dataset': 'cfp',
     'meta_path': "embeddings/cfp/cfp_metadata.npy",
-    'out_dir': "cfp_quadratic",
+    'out_dir': "results/cfp_quadratic",
     'model_pairs': [
         ('arcface', 'adaface'),
         # ('adaface', 'kprpe'),
@@ -37,6 +37,11 @@ CONFIG = {
 }
 
 import os
+# CFE_MODELS="a,b,..." overrides the pair list with (a, b) for partial runs.
+_sel = [s.strip() for s in os.environ.get("CFE_MODELS", "").split(",") if s.strip()]
+if len(_sel) >= 2:
+    CONFIG['model_pairs'] = [(_sel[0], _sel[1])]
+
 os.makedirs(CONFIG['out_dir'], exist_ok=True)
 
 
