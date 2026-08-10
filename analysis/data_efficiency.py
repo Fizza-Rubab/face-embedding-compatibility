@@ -29,6 +29,11 @@ DATA_EFFICIENCY_CONFIG = {
     'max_rank': 50,
 }
 
+# CFE_MODELS="a,b,..." overrides the trend pair with (a, b) -- handy for partial runs.
+_sel = [s.strip() for s in os.environ.get("CFE_MODELS", "").split(",") if s.strip()]
+if len(_sel) >= 2:
+    DATA_EFFICIENCY_CONFIG['model_pairs'] = [(_sel[0], _sel[1])]
+
 os.makedirs(DATA_EFFICIENCY_CONFIG['out_dir'], exist_ok=True)
 
 # Save configuration

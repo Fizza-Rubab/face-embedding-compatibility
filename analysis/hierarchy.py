@@ -33,6 +33,11 @@ CONFIG = {
     ],
 }
 
+_sel = os.environ.get("CFE_MODELS")
+if _sel:
+    _keep = {s.strip() for s in _sel.split(",") if s.strip()}
+    CONFIG['models'] = [m for m in CONFIG['models'] if m in _keep]
+
 os.makedirs(CONFIG['output_dir'], exist_ok=True)
 
 # Model metadata (for analysis)
