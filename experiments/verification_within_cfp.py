@@ -6,7 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from collections import defaultdict
 import pandas as pd
 from cfe.methods import *
-from cfe.config import DEFAULT_PAIRS
+from cfe.config import DEFAULT_PAIRS, DATASET_IMG_DIRS
 import json
 
 # ======================================================
@@ -14,7 +14,7 @@ import json
 # ======================================================
 CONFIG = {
     'dataset': 'cfp',
-    'img_dir': "./data/chinafax/cfpw-dataset/cfp-dataset/Data/Images",
+    'img_dir': DATASET_IMG_DIRS['cfp'],
     'meta_path': "./embeddings/cfp/cfp_metadata.npy",
     'out_dir': "./results/cfp_verification",
 

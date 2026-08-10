@@ -6,7 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from collections import defaultdict
 import pandas as pd
 from cfe.methods import *
-from cfe.config import DEFAULT_PAIRS
+from cfe.config import DEFAULT_PAIRS, DATASET_IMG_DIRS
 import json
 
 # ======================================================
@@ -19,7 +19,7 @@ CONFIG = {
     # 'out_dir': "./results/cfp_verification",
 
     'dataset': 'lfw',
-    'img_dir': "./data/jessicali9530/lfw-dataset/lfw-deepfunneled_cropped_160all",
+    'img_dir': DATASET_IMG_DIRS['lfw'],
     'meta_path': "./embeddings/lfw/lfw_metadata.npy",
     'out_dir': "./results/lfw_verification",
 

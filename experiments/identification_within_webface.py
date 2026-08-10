@@ -9,7 +9,7 @@ from sklearn.linear_model import Ridge
 from collections import defaultdict
 import pandas as pd
 from cfe.methods import *
-from cfe.config import DEFAULT_PAIRS
+from cfe.config import DEFAULT_PAIRS, DATASET_IMG_DIRS
 from tqdm import tqdm
 import json
 import matplotlib.patches as mpatches
@@ -21,7 +21,7 @@ from sklearn.manifold import TSNE
 # ======================================================
 CONFIG = {
     'dataset': 'webface',
-    'img_dir': "./data/ntl0601/casia-webface/casia-webface-5",
+    'img_dir': DATASET_IMG_DIRS['webface'],
     'meta_path': "./embeddings/webface/webface_metadata.npy",
     'out_dir': "./results/webface_analysis",
     'model_pairs': DEFAULT_PAIRS,

@@ -6,7 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from collections import defaultdict
 import pandas as pd
 from cfe.methods import *
-from cfe.config import DEFAULT_PAIRS
+from cfe.config import DEFAULT_PAIRS, DATASET_IMG_DIRS
 import json
 
 # ======================================================
@@ -14,7 +14,7 @@ import json
 # ======================================================
 CONFIG = {
     'dataset': 'webface',
-    'img_dir': "./data/ntl0601/casia-webface/casia-webface-5",
+    'img_dir': DATASET_IMG_DIRS['webface'],
     'meta_path': "./embeddings/webface/webface_metadata.npy",
     'out_dir': "./results/webface_verification",
 

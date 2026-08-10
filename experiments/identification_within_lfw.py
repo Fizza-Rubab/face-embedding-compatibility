@@ -9,7 +9,7 @@ from sklearn.linear_model import Ridge
 from collections import defaultdict
 import pandas as pd
 from cfe.methods import *
-from cfe.config import DEFAULT_PAIRS
+from cfe.config import DEFAULT_PAIRS, DATASET_IMG_DIRS
 from tqdm import tqdm
 import json
 import matplotlib.patches as mpatches
@@ -21,7 +21,7 @@ from sklearn.manifold import TSNE
 # ======================================================
 CONFIG = {
     'dataset': 'lfw',
-    'img_dir': "./data/jessicali9530/lfw-dataset/lfw-deepfunneled_cropped_160all",
+    'img_dir': DATASET_IMG_DIRS['lfw'],
     'meta_path': "./embeddings/lfw/lfw_metadata.npy",
     'out_dir': "./results/lfw_analysis",
     'model_pairs': DEFAULT_PAIRS,
