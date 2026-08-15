@@ -46,7 +46,7 @@ def _image_features(out):
     raise TypeError(f"unexpected get_image_features output: {type(out)}")
 
 
-# --- Foundation models ---
+# Foundation models
 def embed_clip(imgs):
     from transformers import CLIPProcessor, CLIPModel
     proc, model = _once("clip", lambda: (
@@ -167,7 +167,7 @@ def embed_googlevit(imgs):
     return emb.float().cpu().numpy()
 
 
-# --- Face-recognition models (CVLface / MagFace) ---
+# Face-recognition models (CVLface / MagFace)
 def _load_cvlface(repo_id):
     save_path = os.path.join(CKPT_DIR, "models--" + repo_id.replace("/", "--"))
     return load_model_by_repo_id(repo_id, save_path=save_path, HF_TOKEN=HF_TOKEN)

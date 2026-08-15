@@ -137,13 +137,13 @@ def run_pair(modelX, modelY, metadata, X, Y):
                             np.maximum(np.linalg.norm(lin_outputs, axis=1), 1e-9))
         contribution_ratio = float(np.mean(per_sample_ratio))
 
-        # ---- Variance explained by quadratic term ----
+        # Variance explained by quadratic term
         total_outputs = lin_outputs + quad_outputs
         var_quad  = float(np.var(quad_outputs))
         var_total = float(np.var(total_outputs))
         var_ratio = var_quad / (var_total + 1e-9)
 
-        # ---- Lasso-specific sparsity stats ----
+        # Lasso-specific sparsity stats
         if CONFIG['regularizer'] == 'lasso':
             total_nonzero_lin  = int(np.sum(np.any(W_poly_lin  != 0, axis=1)))
             total_nonzero_quad = int(np.sum(np.any(W_poly_quad != 0, axis=1)))
@@ -230,7 +230,7 @@ def run_pair(modelX, modelY, metadata, X, Y):
         print(f"    Quadratic features kept: {np.mean(lasso_quad_fracs)*100:.1f}% ± {np.std(lasso_quad_fracs)*100:.1f}%")
         print(f"    Share of surviving features that are linear: {np.mean(lasso_lin_shares)*100:.1f}% ± {np.std(lasso_lin_shares)*100:.1f}%")
 
-    # ---- Weight instability across training sizes (fixed seed=42) ----
+    # Weight instability across training sizes (fixed seed=42)
     # fit W_lin and W_quad at each train ratio, compare consistency
     # if quadratic fits noise: weights change wildly as training set grows
     print(f"\n  Computing weight instability across train sizes {CONFIG['train_ratios']}...")
@@ -321,7 +321,7 @@ def main():
         Y = np.load(f"embeddings/{CONFIG['dataset']}/{modelY}.npy")
         pairs_data.append((modelX, modelY, X, Y))
 
-    # ---- Alpha sweep (ridge or lasso) ----
+    # Alpha sweep (ridge or lasso)
     if len(CONFIG.get('lasso_alpha_sweep', [])) > 1:
         alphas = CONFIG['lasso_alpha_sweep']
         reg_label = CONFIG['regularizer'].upper()
@@ -352,7 +352,7 @@ def main():
         best_alpha = CONFIG['alpha'] if CONFIG['regularizer'] == 'ridge' else CONFIG['lasso_alpha']
         print(f"\nUsing fixed alpha={best_alpha} (no sweep)")
 
-    # ---- Full run with chosen alpha ----
+    # Full run with chosen alpha
     print("\n" + "="*60)
     print(f"FULL RUN  [{CONFIG['regularizer']}, alpha={CONFIG['lasso_alpha']}]")
     print("="*60)

@@ -9,9 +9,6 @@ from cfe.methods import *
 from cfe.config import DEFAULT_PAIRS
 import json
 
-# ======================================================
-# CROSS-DATASET VERIFICATION CONFIGURATION
-# ======================================================
 CROSS_VERIFICATION_CONFIG = {
     'experiments': [
         # Train the alignment on CFP, evaluate on LFW (paper Table 3).
@@ -39,9 +36,6 @@ os.makedirs(CROSS_VERIFICATION_CONFIG['out_dir'], exist_ok=True)
 with open(f"{CROSS_VERIFICATION_CONFIG['out_dir']}/config.json", 'w') as f:
     json.dump(CROSS_VERIFICATION_CONFIG, f, indent=2)
 
-# ======================================================
-# UTILITY FUNCTIONS
-# ======================================================
 
 def preprocess_embeddings(X_train, Y_train, X_test, Y_test):
     """Preprocess embeddings: center and pad to same dimension."""
@@ -72,9 +66,6 @@ def row_norm(a):
     return a / np.maximum(np.linalg.norm(a, axis=1, keepdims=True), 1e-12)
 
 
-# ======================================================
-# SAMPLED VERIFICATION PAIR GENERATION
-# ======================================================
 
 def sample_verification_pairs(metadata_test, n_genuine, n_impostor):
     """
@@ -99,9 +90,6 @@ def sample_verification_pairs(metadata_test, n_genuine, n_impostor):
     
     pairs = []
     
-    # ========================================
-    # SAMPLE GENUINE PAIRS
-    # ========================================
     print(f"  Sampling {n_genuine:,} genuine pairs...")
     
     # Collect all possible genuine pairs
@@ -129,9 +117,6 @@ def sample_verification_pairs(metadata_test, n_genuine, n_impostor):
     pairs.extend(sampled_genuine)
     print(f"    Sampled {len(sampled_genuine):,} genuine pairs")
     
-    # ========================================
-    # SAMPLE IMPOSTOR PAIRS
-    # ========================================
     print(f"  Sampling {n_impostor:,} impostor pairs...")
     
     # Build identity lookup
@@ -177,9 +162,6 @@ def sample_verification_pairs(metadata_test, n_genuine, n_impostor):
     return pairs
 
 
-# ======================================================
-# VERIFICATION METRICS
-# ======================================================
 
 def compute_verification_metrics(X, Y, pairs):
     """
@@ -239,9 +221,6 @@ def compute_verification_metrics(X, Y, pairs):
     }
 
 
-# ======================================================
-# SINGLE SEED CROSS-DATASET VERIFICATION
-# ======================================================
 
 def run_cross_verification_single_seed(modelX, modelY, exp_config, seed, config):
     """
@@ -368,9 +347,6 @@ def run_cross_verification_single_seed(modelX, modelY, exp_config, seed, config)
     return seed_results
 
 
-# ======================================================
-# MULTI-SEED EXPERIMENT
-# ======================================================
 
 def run_cross_verification_multi_seed(modelX, modelY, exp_config, config):
     """
@@ -423,9 +399,6 @@ def aggregate_verification_results(all_results):
     return aggregated
 
 
-# ======================================================
-# RESULTS EXPORT
-# ======================================================
 
 def create_verification_table(aggregated_results, save_path):
     """Create and save verification results table."""
@@ -489,9 +462,6 @@ def save_cross_verification_results(all_results, aggregated_results,
     create_verification_table(aggregated_results, table_path)
 
 
-# ======================================================
-# MAIN EXECUTION
-# ======================================================
 
 def main():
     """Main execution function."""

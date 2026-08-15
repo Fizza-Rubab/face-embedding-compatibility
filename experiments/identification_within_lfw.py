@@ -16,9 +16,6 @@ import matplotlib.patches as mpatches
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 
-# ======================================================
-# CONFIGURATION
-# ======================================================
 CONFIG = {
     'dataset': 'lfw',
     'img_dir': DATASET_IMG_DIRS['lfw'],
@@ -40,9 +37,6 @@ with open(f"{CONFIG['out_dir']}/experiment_config.json", 'w') as f:
 print("Experiment Configuration:")
 print(json.dumps(CONFIG, indent=2))
 
-# ======================================================
-# UTILITY FUNCTIONS
-# ======================================================
 
 def split_by_identity(metadata, train_ratio=0.7, seed=42):
     """
@@ -216,9 +210,6 @@ def compute_all_metrics_fast(A, B, labels_A, labels_B, max_rank=50):
     }
 
 
-# ======================================================
-# CHUNKED VERSION FOR EXTREMELY LARGE DATASETS
-# ======================================================
 def compute_all_metrics_chunked(A, B, labels_A, labels_B, max_rank=50, chunk_size=10000):
     """
     Memory-efficient chunked computation.
@@ -259,10 +250,8 @@ def compute_all_metrics_chunked(A, B, labels_A, labels_B, max_rank=50, chunk_siz
         # Compute similarity for this chunk only
         S_chunk = A_chunk @ B_norm.T  # Shape: (chunk_size, n_gallery)
         
-        # =====================================================
         # KEY OPTIMIZATION: Use argpartition instead of argsort
         # Only need top-k, not full sort!
-        # =====================================================
         k_needed = min(max_rank, n_gallery)
         
         # Get top-k indices (much faster than full sort!)
@@ -300,7 +289,6 @@ def compute_all_metrics_chunked(A, B, labels_A, labels_B, max_rank=50, chunk_siz
         if k_needed >= 20:
             total_rank20 += np.sum(np.any(matches[:, :20], axis=1))
         
-        # CMC
         match_positions = np.argmax(matches, axis=1)
         has_match = np.any(matches, axis=1)
         match_positions[~has_match] = max_rank
@@ -340,9 +328,6 @@ def compute_all_metrics_chunked(A, B, labels_A, labels_B, max_rank=50, chunk_siz
     }
 
 
-# ======================================================
-# USAGE EXAMPLE
-# ======================================================
 
 def evaluate_alignment(A, B, labels_A, labels_B, max_rank=50, use_chunked=True):
     """
@@ -453,7 +438,7 @@ def visualize_query_retrieval_before_after(
         top_k_before = np.argsort(-sim_before)[:top_k]
         top_k_after = np.argsort(-sim_after)[:top_k]
         
-        # --- Query Image ---
+        # Query Image
         ax = plt.subplot(n_rows, n_cols, row_idx * n_cols + 1)
         try:
             query_img = Image.open(query_img_path).convert('RGB')
@@ -467,10 +452,10 @@ def visualize_query_retrieval_before_after(
                                         linewidth=3, edgecolor='blue', 
                                         facecolor='none'))
         
-        # --- Gap column after query (column 2) ---
+        # Gap column after query (column 2)
         # (automatically empty - just skip it)
         
-        # --- BEFORE Alignment Retrievals ---
+        # BEFORE Alignment Retrievals
         for k_idx, gallery_idx in enumerate(top_k_before):
             col = 1 + 1 + k_idx + 1  # Query + gap + k_idx + 1
             ax = plt.subplot(n_rows, n_cols, row_idx * n_cols + col)
@@ -507,9 +492,9 @@ def visualize_query_retrieval_before_after(
             ax.text(0.5, 1.15, 'BEFORE Alignment', ha='center', va='bottom',
                    fontsize=12, fontweight='bold', transform=ax.transAxes)
         
-        # --- Gap column between before and after (automatically empty) ---
+        # Gap column between before and after (automatically empty)
         
-        # --- AFTER Alignment Retrievals ---
+        # AFTER Alignment Retrievals
         for k_idx, gallery_idx in enumerate(top_k_after):
             col = 1 + 1 + top_k + 1 + k_idx + 1  # Query + gap + Before + gap + k_idx + 1
             ax = plt.subplot(n_rows, n_cols, row_idx * n_cols + col)
@@ -580,9 +565,7 @@ def visualize_pca_before_after_alignment(
     if reduction not in ["pca", "tsne"]:
         raise ValueError("reduction must be 'pca' or 'tsne'")
 
-    # ---------------------------------------------------------
     # Split
-    # ---------------------------------------------------------
     train_idx, test_idx, _ = split_by_identity(
         metadata, train_ratio=CONFIG['train_ratio'], seed=seed
     )
@@ -598,9 +581,7 @@ def visualize_pca_before_after_alignment(
     # Align
     X_test_aligned = method.transform(X_test_proc)
 
-    # ---------------------------------------------------------
     # Identity selection
-    # ---------------------------------------------------------
     test_identities = [rec['identity'] for rec in meta_test]
     unique_identities = sorted(list(set(test_identities)))
 
@@ -628,9 +609,7 @@ def visualize_pca_before_after_alignment(
         if selected_mask[i]
     ]
 
-    # ---------------------------------------------------------
     # Color mapping
-    # ---------------------------------------------------------
     identity_to_idx = {
         identity: i for i, identity in enumerate(selected_identities)
     }
@@ -641,9 +620,7 @@ def visualize_pca_before_after_alignment(
         for identity in identities_filtered
     ]
 
-    # ---------------------------------------------------------
     # Dimensionality reduction helper
-    # ---------------------------------------------------------
     def reduce_2d(data):
         if reduction == "pca":
             reducer = PCA(n_components=2)
@@ -660,9 +637,7 @@ def visualize_pca_before_after_alignment(
             Z2 = reducer.fit_transform(data)
             return Z2, None
 
-    # ---------------------------------------------------------
     # BEFORE Alignment
-    # ---------------------------------------------------------
     combined_before = np.vstack([X_test_filtered, Y_test_filtered])
     combined_before_2d, var_before = reduce_2d(combined_before)
 
@@ -670,18 +645,14 @@ def visualize_pca_before_after_alignment(
     X_before_2d = combined_before_2d[:n]
     Y_before_2d = combined_before_2d[n:]
 
-    # ---------------------------------------------------------
     # AFTER Alignment
-    # ---------------------------------------------------------
     combined_after = np.vstack([X_test_aligned_filtered, Y_test_filtered])
     combined_after_2d, var_after = reduce_2d(combined_after)
 
     X_after_2d = combined_after_2d[:n]
     Y_after_2d = combined_after_2d[n:]
 
-    # ---------------------------------------------------------
     # Plotting
-    # ---------------------------------------------------------
     fig, axes = plt.subplots(1, 2, figsize=(16, 7))
 
     # ================= BEFORE =================
@@ -734,9 +705,7 @@ def visualize_pca_before_after_alignment(
                  fontsize=13, fontweight='bold')
     ax.grid(alpha=0.3)
 
-    # ---------------------------------------------------------
     # Legend
-    # ---------------------------------------------------------
     handles = [
         mpatches.Patch(color=colors[i], label=f'ID: {identity}')
         for i, identity in enumerate(selected_identities)
@@ -771,9 +740,6 @@ def visualize_pca_before_after_alignment(
         plt.show()
         return None
     
-# ======================================================
-# SINGLE SEED EXPERIMENT
-# ======================================================
 
 def run_single_seed_experiment(modelX, modelY, metadata, X, Y, seed, config):
     """
@@ -854,9 +820,6 @@ def run_single_seed_experiment(modelX, modelY, metadata, X, Y, seed, config):
             print(f"  Rank-1: {metrics['rank1']:.2f}% (Δ={metrics['rank1']-baseline_metrics['rank1']:+.2f}%)")
             print(f"  mAP: {metrics['map']:.4f} (Δ={metrics['map']-baseline_metrics['map']:+.4f})")
             
-            # ============================================================
-            # VISUALIZATIONS
-            # ============================================================
             vis_dir = f"{config['out_dir']}/visualizations"
             
             if seed == config['seeds'][0]:
@@ -890,9 +853,6 @@ def run_single_seed_experiment(modelX, modelY, metadata, X, Y, seed, config):
     return seed_results
 
 
-# ======================================================
-# MULTI-SEED EXPERIMENT
-# ======================================================
 
 def run_multi_seed_experiment(modelX, modelY, config):
     """
@@ -966,9 +926,6 @@ def aggregate_multi_seed_results(all_results):
     return aggregated
 
 
-# ======================================================
-# RESULTS VISUALIZATION AND EXPORT
-# ======================================================
 
 def create_results_table(aggregated_results, save_path):
     """
@@ -1100,9 +1057,6 @@ def save_all_results(all_results, aggregated_results, modelX, modelY, config):
                                modelX, modelY, cmc_path)
 
 
-# ======================================================
-# MAIN EXECUTION
-# ======================================================
 
 def main():
     """

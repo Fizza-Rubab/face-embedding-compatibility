@@ -10,9 +10,6 @@ import matplotlib as mpl
 mpl.rcParams['svg.fonttype'] = 'none'  # Keep text as text, not paths
 mpl.rcParams['font.family'] = 'serif'
 mpl.rcParams['font.serif'] = ['Times New Roman']
-# ======================================================
-# DATA EFFICIENCY EXPERIMENT CONFIGURATION
-# ======================================================
 DATA_EFFICIENCY_CONFIG = {
     'dataset': 'cfp',
     'meta_path': 'embeddings/cfp/cfp_metadata.npy',
@@ -29,7 +26,7 @@ DATA_EFFICIENCY_CONFIG = {
     'max_rank': 50,
 }
 
-# CFE_MODELS="a,b,..." overrides the trend pair with (a, b) -- handy for partial runs.
+# CFE_MODELS="a,b,..." overrides the trend pair with (a, b) - handy for partial runs.
 _sel = [s.strip() for s in os.environ.get("CFE_MODELS", "").split(",") if s.strip()]
 if len(_sel) >= 2:
     DATA_EFFICIENCY_CONFIG['model_pairs'] = [(_sel[0], _sel[1])]
@@ -40,9 +37,6 @@ os.makedirs(DATA_EFFICIENCY_CONFIG['out_dir'], exist_ok=True)
 with open(f"{DATA_EFFICIENCY_CONFIG['out_dir']}/config.json", 'w') as f:
     json.dump(DATA_EFFICIENCY_CONFIG, f, indent=2)
 
-# ======================================================
-# UTILITY FUNCTIONS
-# ======================================================
 def split_by_identity_with_fixed_test(metadata, train_ratio, test_ratio, seed=42):
     """
     Split dataset with FIXED test set and VARYING train set.
@@ -175,9 +169,6 @@ def evaluate_alignment_fast(A, B, labels_A, labels_B, max_rank=50):
     }
 
 
-# ======================================================
-# SINGLE SEED DATA EFFICIENCY EXPERIMENT
-# ======================================================
 
 def run_data_efficiency_single_seed(modelX, modelY, metadata, X, Y, train_ratio, seed, config):
     """
@@ -260,9 +251,6 @@ def run_data_efficiency_single_seed(modelX, modelY, metadata, X, Y, train_ratio,
     return seed_results
 
 
-# ======================================================
-# MULTI-SEED DATA EFFICIENCY EXPERIMENT
-# ======================================================
 
 def run_data_efficiency_experiment(modelX, modelY, config):
     """
@@ -332,9 +320,6 @@ def aggregate_results(seed_results_list):
     return aggregated
 
 
-# ======================================================
-# RESULTS EXPORT
-# ======================================================
 
 def save_data_efficiency_results(all_results, aggregated_results, modelX, modelY, config):
     """Save all data efficiency results."""
@@ -439,9 +424,6 @@ def plot_data_efficiency(aggregated_results, modelX, modelY, save_path, config):
     plt.close()
 
 
-# ======================================================
-# MAIN
-# ======================================================
 
 def main():
     """Main execution."""

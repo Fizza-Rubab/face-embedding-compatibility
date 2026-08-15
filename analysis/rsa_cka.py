@@ -8,9 +8,6 @@ from cfe.methods import ProcrustesAlignment, LinearAlignment, RidgeAlignment
 from scipy.stats import spearmanr
 import json
 
-# ======================================================
-# CONFIGURATION
-# ======================================================
 CONFIG = {
     'dataset': 'cfp',
     'meta_path': "embeddings/cfp/cfp_metadata.npy",
@@ -44,9 +41,7 @@ print("Configuration:")
 print(json.dumps(CONFIG, indent=2))
 
 
-# ======================================================
 # UTILITIES (identical to within_dataset_cfp.py)
-# ======================================================
 
 def split_by_identity(metadata, train_ratio=0.7, seed=42):
     np.random.seed(seed)
@@ -99,9 +94,7 @@ def row_norm(A):
     return A / np.maximum(np.linalg.norm(A, axis=1, keepdims=True), 1e-9)
 
 
-# ======================================================
 # RSA  -  Representational Similarity Analysis
-# ======================================================
 # Compute the NxN cosine-similarity matrix for each model,
 # then correlate the upper triangles (Spearman r).
 # A high score means the two models rank pairs of images similarly.
@@ -131,9 +124,7 @@ def compute_rsa(A, B, subsample=500, seed=42):
     return float(rsa_score)
 
 
-# ======================================================
 # CKA  -  Linear Centered Kernel Alignment
-# ======================================================
 # Measures similarity between two kernel matrices derived from the embeddings.
 # Invariant to orthogonal transforms and isotropic scaling.
 
@@ -172,9 +163,6 @@ def compute_cka(A, B, subsample=500, seed=42):
     return float(hsic_ab / denom)
 
 
-# ======================================================
-# SINGLE SEED EXPERIMENT
-# ======================================================
 
 def run_single_seed(modelX, modelY, metadata, X, Y, seed):
     print(f"\n{'='*60}")
@@ -197,7 +185,7 @@ def run_single_seed(modelX, modelY, metadata, X, Y, seed):
 
     seed_results = {'seed': seed, 'methods': {}}
 
-    # ---- Baseline RSA / CKA (no alignment) ----
+    # Baseline RSA / CKA (no alignment)
     rsa_before = compute_rsa(X_test_p, Y_test_p,
                              subsample=CONFIG['rsa_subsample'], seed=seed)
     cka_before = compute_cka(X_test_p, Y_test_p,
@@ -209,7 +197,7 @@ def run_single_seed(modelX, modelY, metadata, X, Y, seed):
     }
     print(f"  Baseline  RSA={rsa_before:.4f}  CKA={cka_before:.4f}")
 
-    # ---- Each alignment method ----
+    # Each alignment method
     for method in alignment_methods:
         method.fit(X_train_p, Y_train_p)
         X_test_aligned = method.transform(X_test_p)
@@ -229,9 +217,6 @@ def run_single_seed(modelX, modelY, metadata, X, Y, seed):
     return seed_results
 
 
-# ======================================================
-# MULTI-SEED AGGREGATION
-# ======================================================
 
 def aggregate(all_results):
     method_names = list(all_results[0]['methods'].keys())
@@ -248,9 +233,6 @@ def aggregate(all_results):
     return aggregated
 
 
-# ======================================================
-# RESULTS TABLE
-# ======================================================
 
 def save_results(all_pair_results, out_dir):
     rows = []
@@ -287,9 +269,7 @@ def save_results(all_pair_results, out_dir):
     return df
 
 
-# ======================================================
 # OPTIONAL: heatmap of CKA before/after for all pairs
-# ======================================================
 
 def plot_heatmap(all_pair_results, out_dir):
     pairs   = [f"{e['modelX']}→{e['modelY']}" for e in all_pair_results]
@@ -320,9 +300,6 @@ def plot_heatmap(all_pair_results, out_dir):
         print(f"Heatmap saved: {path}")
 
 
-# ======================================================
-# MAIN
-# ======================================================
 
 def main():
     print("="*60)

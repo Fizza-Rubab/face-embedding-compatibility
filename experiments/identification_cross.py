@@ -8,9 +8,6 @@ from cfe.methods import *
 from cfe.config import DEFAULT_PAIRS
 import json
 
-# ======================================================
-# CROSS-DATASET CONFIGURATION
-# ======================================================
 CROSS_DATASET_CONFIG = {
     'experiments': [
         # Train the alignment on CFP, evaluate on LFW (paper Table 3).
@@ -35,9 +32,7 @@ os.makedirs(CROSS_DATASET_CONFIG['out_dir'], exist_ok=True)
 with open(f"{CROSS_DATASET_CONFIG['out_dir']}/cross_dataset_config.json", 'w') as f:
     json.dump(CROSS_DATASET_CONFIG, f, indent=2)
 
-# ======================================================
 # UTILITY FUNCTIONS (reuse from main script)
-# ======================================================
 
 def preprocess_embeddings(X_train, Y_train, X_test, Y_test):
     """Preprocess embeddings: center and pad to same dimension."""
@@ -71,12 +66,6 @@ def create_identity_labels(metadata):
     return labels
 
 
-# ======================================================
-# EVALUATION METRICS
-# ======================================================
-# ======================================================
-# FAST EVALUATION METRICS (SAME AS INTRA-DATASET)
-# ======================================================
 
 def row_norm(a):
     """Normalize rows to unit length"""
@@ -204,7 +193,6 @@ def compute_all_metrics_chunked(A, B, labels_A, labels_B, max_rank=50, chunk_siz
         if k_needed >= 20:
             total_rank20 += np.sum(np.any(matches[:, :20], axis=1))
         
-        # CMC
         match_positions = np.argmax(matches, axis=1)
         has_match = np.any(matches, axis=1)
         match_positions[~has_match] = max_rank
@@ -265,9 +253,6 @@ def evaluate_alignment(A, B, labels_A, labels_B, max_rank=50):
         print("  → Using FAST vectorized computation")
         return compute_all_metrics_fast(A, B, labels_A, labels_B, max_rank)
 
-# ======================================================
-# CROSS-DATASET EXPERIMENT (SINGLE SEED)
-# ======================================================
 
 def run_cross_dataset_single_seed(modelX, modelY, exp_config, seed, config):
     """
@@ -369,9 +354,6 @@ def run_cross_dataset_single_seed(modelX, modelY, exp_config, seed, config):
     return seed_results
 
 
-# ======================================================
-# CROSS-DATASET MULTI-SEED EXPERIMENT
-# ======================================================
 
 def run_cross_dataset_multi_seed(modelX, modelY, exp_config, config):
     """
@@ -427,9 +409,6 @@ def aggregate_multi_seed_results(all_results):
     return aggregated
 
 
-# ======================================================
-# RESULTS EXPORT
-# ======================================================
 
 def create_results_table(aggregated_results, save_path):
     """Create and save results table with mean ± std."""
@@ -549,9 +528,6 @@ def save_cross_dataset_results(all_results, aggregated_results,
     #                            exp_name, modelX, modelY, cmc_path)
 
 
-# ======================================================
-# COMPARISON TABLE ACROSS ALL EXPERIMENTS
-# ======================================================
 
 def create_comparison_table(all_experiment_results, config):
     """
@@ -592,9 +568,6 @@ def create_comparison_table(all_experiment_results, config):
     return df
 
 
-# ======================================================
-# MAIN EXECUTION
-# ======================================================
 
 def main():
     """Main execution function for cross-dataset experiments."""

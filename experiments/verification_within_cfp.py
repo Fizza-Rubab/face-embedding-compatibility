@@ -9,9 +9,6 @@ from cfe.methods import *
 from cfe.config import DEFAULT_PAIRS, DATASET_IMG_DIRS
 import json
 
-# ======================================================
-# CONFIGURATION
-# ======================================================
 CONFIG = {
     'dataset': 'cfp',
     'img_dir': DATASET_IMG_DIRS['cfp'],
@@ -38,9 +35,6 @@ with open(f"{CONFIG['out_dir']}/verification_config.json", 'w') as f:
 print("Verification Experiment Configuration:")
 print(json.dumps(CONFIG, indent=2))
 
-# ======================================================
-# UTILITY FUNCTIONS (SAME AS IDENTIFICATION)
-# ======================================================
 
 def split_by_identity(metadata, train_ratio=0.7, seed=42):
     """
@@ -137,9 +131,6 @@ def row_norm(a):
     return a / np.maximum(np.linalg.norm(a, axis=1, keepdims=True), 1e-12)
 
 
-# ======================================================
-# VERIFICATION PAIR GENERATION FROM TEST SET
-# ======================================================
 
 def create_balanced_verification_pairs_from_test(metadata_test):
     identity_to_indices = defaultdict(list)
@@ -151,9 +142,7 @@ def create_balanced_verification_pairs_from_test(metadata_test):
     
     pairs = []
     
-    # ========================================
     # GENUINE PAIRS: All combinations within same identity (exhaustive)
-    # ========================================
     print("  Generating genuine pairs (exhaustive)...")
     
     for identity, indices in identity_to_indices.items():
@@ -166,9 +155,7 @@ def create_balanced_verification_pairs_from_test(metadata_test):
     n_genuine = len(pairs)
     print(f"    Generated {n_genuine:,} genuine pairs")
     
-    # ========================================
     # IMPOSTOR PAIRS: Sample to match genuine count (balanced)
-    # ========================================
     print(f"  Sampling {n_genuine:,} impostor pairs (balanced)...")
     
     # Build identity lookup for fast access
@@ -213,9 +200,6 @@ def create_balanced_verification_pairs_from_test(metadata_test):
     return pairs
 
 
-# ======================================================
-# VERIFICATION METRICS
-# ======================================================
 
 def compute_verification_metrics(X, Y, pairs):
     """
@@ -287,9 +271,6 @@ def compute_verification_metrics(X, Y, pairs):
     }
 
 
-# ======================================================
-# SINGLE SEED VERIFICATION EXPERIMENT
-# ======================================================
 
 def run_single_seed_verification(modelX, modelY, metadata, X, Y, seed, config):
     """
@@ -300,9 +281,6 @@ def run_single_seed_verification(modelX, modelY, metadata, X, Y, seed, config):
     print(f"SEED {seed}: {modelX} → {modelY}")
     print(f"{'='*70}")
     
-    # ========================================
-    # IDENTICAL SPLIT TO IDENTIFICATION
-    # ========================================
     train_idx, test_idx, split_info = split_by_identity(
         metadata, train_ratio=config['train_ratio'], seed=seed
     )
@@ -314,9 +292,6 @@ def run_single_seed_verification(modelX, modelY, metadata, X, Y, seed, config):
     print(f"Training alignment on {split_info['train_identities']} identities ({split_info['train_images']} images)")
     print(f"Testing on {split_info['test_identities']} identities ({split_info['test_images']} images)")
     
-    # ========================================
-    # PREPROCESS (IDENTICAL TO IDENTIFICATION)
-    # ========================================
     X_train_proc, Y_train_proc, X_test_proc, Y_test_proc, preprocess_stats = \
         preprocess_embeddings(X_train, Y_train, X_test, Y_test)
     
@@ -324,9 +299,6 @@ def run_single_seed_verification(modelX, modelY, metadata, X, Y, seed, config):
     X_test_norm = row_norm(X_test_proc)
     Y_test_norm = row_norm(Y_test_proc)
     
-    # ========================================
-    # GENERATE ALL VERIFICATION PAIRS FROM TEST SET
-    # ========================================
     print(f"\nGenerating ALL verification pairs from test set...")
     pairs = create_balanced_verification_pairs_from_test(meta_test)
     
@@ -339,9 +311,7 @@ def run_single_seed_verification(modelX, modelY, metadata, X, Y, seed, config):
         'methods': {}
     }
     
-    # ========================================
     # BASELINE (No Alignment)
-    # ========================================
     print("\nBaseline (No Alignment)...")
     
     baseline_metrics = compute_verification_metrics(X_test_norm, Y_test_norm, pairs)
@@ -360,9 +330,6 @@ def run_single_seed_verification(modelX, modelY, metadata, X, Y, seed, config):
     print(f"  TMR@FMR=1%: {baseline_metrics['tmr_at_fmr_1']:.2f}%")
     print(f"  TMR@FMR=0.1%: {baseline_metrics['tmr_at_fmr_0.1']:.2f}%")
     
-    # ========================================
-    # WITH ALIGNMENT (SAME METHODS AS IDENTIFICATION)
-    # ========================================
     alignment_methods = [
         ProcrustesAlignment(),
         LinearAlignment(),
@@ -413,9 +380,6 @@ def run_single_seed_verification(modelX, modelY, metadata, X, Y, seed, config):
     return seed_results
 
 
-# ======================================================
-# MULTI-SEED VERIFICATION EXPERIMENT
-# ======================================================
 
 def run_multi_seed_verification(modelX, modelY, config):
     """
@@ -481,9 +445,6 @@ def aggregate_verification_results(all_results):
     return aggregated
 
 
-# ======================================================
-# RESULTS EXPORT
-# ======================================================
 
 def create_verification_table(aggregated_results, save_path):
     """
@@ -636,9 +597,6 @@ def plot_roc_curves_aggregated(all_results, aggregated_results, modelX, modelY, 
     plt.close()
 
 
-# ======================================================
-# MAIN EXECUTION
-# ======================================================
 
 def main():
     """

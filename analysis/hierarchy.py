@@ -13,9 +13,6 @@ mpl.rcParams['svg.fonttype'] = 'none'  # Keep text as text, not paths
 mpl.rcParams['font.serif'] = ['Times New Roman']
 
 
-# ======================================================
-# CONFIGURATION
-# ======================================================
 CONFIG = {
     # 'dataset': 'cfp',
     # 'results_dir': './results/cfp_analysis',
@@ -61,9 +58,6 @@ MODEL_INFO = {
 
 }
 
-# ======================================================
-# BUILD ALIGNMENT MATRIX FROM CSV FILES
-# ======================================================
 
 def build_alignment_matrix(models, results_dir, dataset, method='Linear'):
     """
@@ -152,9 +146,7 @@ np.save(f"{CONFIG['output_dir']}/map_matrix.npy", map_matrix)
 with open(f"{CONFIG['output_dir']}/available_pairs.json", 'w') as f:
     json.dump(available_pairs, f, indent=2)
 
-# ======================================================
 # ANALYSIS 1: HIERARCHICAL CLUSTERING (DENDROGRAM)
-# ======================================================
 
 def plot_dendrogram(matrix, models, save_path):
     """
@@ -201,9 +193,7 @@ plot_dendrogram(
     f"{CONFIG['output_dir']}/dendrogram.svg"
 )
 
-# ======================================================
 # ANALYSIS 2: DIRECTIONAL ASYMMETRY
-# ======================================================
 
 def analyze_asymmetry(matrix, models, save_path):
     """
@@ -286,9 +276,7 @@ df_asym = analyze_asymmetry(
     f"{CONFIG['output_dir']}/asymmetry.svg"
 )
 
-# ======================================================
 # ANALYSIS 3: EMBEDDING SPACE CENTRALITY
-# ======================================================
 
 def compute_centrality(matrix, models, save_path):
     """
@@ -369,9 +357,7 @@ df_central = compute_centrality(
 )
 
 
-# ======================================================
 # ANALYSIS 5: SYMMETRIZED HEATMAP
-# ======================================================
 
 def plot_symmetrized_heatmap(matrix, models, save_path):
     """
@@ -406,9 +392,6 @@ plot_symmetrized_heatmap(
     f"{CONFIG['output_dir']}/heatmap_symmetrized.svg"
 )
 
-# ======================================================
-# SUMMARY STATISTICS
-# ======================================================
 
 print("\n" + "="*70)
 print("SUMMARY STATISTICS")

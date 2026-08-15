@@ -7,9 +7,6 @@ import pandas as pd
 from cfe.methods import RidgeAlignment, LinearAlignment
 import json
 
-# ======================================================
-# CONFIGURATION
-# ======================================================
 CONFIG = {
     'dataset': 'cfp',
     'meta_path': "embeddings/cfp/cfp_metadata.npy",
@@ -39,9 +36,7 @@ print("Configuration:")
 print(json.dumps(CONFIG, indent=2))
 
 
-# ======================================================
 # UTILITIES - identical to within_dataset_cfp.py
-# ======================================================
 
 def split_by_identity(metadata, train_ratio=0.7, seed=42):
     np.random.seed(seed)
@@ -103,9 +98,7 @@ def compute_rank1(A, B, labels, chunk_size=5000):
     return correct / len(A_n) * 100
 
 
-# ======================================================
 # SINGLE SEED - runs all train_ratios in one pass
-# ======================================================
 
 def run_single_seed(modelX, modelY, metadata, X, Y, seed):
     """
@@ -173,9 +166,6 @@ def run_single_seed(modelX, modelY, metadata, X, Y, seed):
     return ratio_results
 
 
-# ======================================================
-# MULTI-SEED
-# ======================================================
 
 def run_pair(modelX, modelY, metadata, X, Y):
     print(f"\n{'#'*60}")
@@ -206,16 +196,13 @@ def run_pair(modelX, modelY, metadata, X, Y):
     return aggregated
 
 
-# ======================================================
-# RESULTS TABLE + PLOT
-# ======================================================
 
 def save_results(all_pair_results):
     out_dir = CONFIG['out_dir']
     alphas  = CONFIG['alphas']
     ratios  = CONFIG['train_ratios']
 
-    # --- CSV table ---
+    # CSV table
     rows = []
     for entry in all_pair_results:
         pair = f"{entry['modelX']} → {entry['modelY']}"
@@ -240,7 +227,7 @@ def save_results(all_pair_results):
     print(df.to_string(index=False))
     print("="*75)
 
-    # --- Plot: one subplot per model pair
+    # Plot: one subplot per model pair
     #     x = alpha (log), y = Rank-1
     #     one curve per train_ratio, dashed horizontal = Linear at that ratio
     n_pairs = len(all_pair_results)
@@ -299,9 +286,6 @@ def save_results(all_pair_results):
         json.dump(all_pair_results, f, indent=2)
 
 
-# ======================================================
-# MAIN
-# ======================================================
 
 def main():
     print("="*60)
