@@ -26,7 +26,7 @@ CONFIG = {
     'train_ratio': 0.7,
     'n_seeds': 5,
     'seeds': [42, 123, 217, 7, 531],
-    # Number of images to subsample for RSA/CKA (NxN matrix — keep manageable)
+    # Number of images to subsample for RSA/CKA (NxN matrix - keep manageable)
     'rsa_subsample': 500,
 }
 
@@ -100,7 +100,7 @@ def row_norm(A):
 
 
 # ======================================================
-# RSA  —  Representational Similarity Analysis
+# RSA  -  Representational Similarity Analysis
 # ======================================================
 # Compute the NxN cosine-similarity matrix for each model,
 # then correlate the upper triangles (Spearman r).
@@ -132,7 +132,7 @@ def compute_rsa(A, B, subsample=500, seed=42):
 
 
 # ======================================================
-# CKA  —  Linear Centered Kernel Alignment
+# CKA  -  Linear Centered Kernel Alignment
 # ======================================================
 # Measures similarity between two kernel matrices derived from the embeddings.
 # Invariant to orthogonal transforms and isotropic scaling.

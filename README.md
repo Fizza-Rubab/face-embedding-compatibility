@@ -19,7 +19,7 @@ Code to reproduce the experiments and analyses in the paper:
 1. **Extract** embeddings for each model on each dataset (`extraction/`).
 2. **Align** embedding spaces with Procrustes / Linear / Ridge maps (`cfe/methods.py`).
 3. **Evaluate** cross-model identification and verification, intra- and cross-dataset (`experiments/`).
-4. **Analyze** the resulting compatibility structure — hierarchy, source/sink
+4. **Analyze** the resulting compatibility structure: hierarchy, source/sink
    asymmetry, data-efficiency, RSA/CKA (`analysis/`).
 
 ---
@@ -57,12 +57,9 @@ results/       # generated: per-experiment JSON/CSV outputs
 ```bash
 conda create -n cfe python=3.11 -y
 conda activate cfe
-pip install -e .                 # the `cfe` package + core deps
-
-# Install torch matched to your CUDA version before the rest (needed only for extraction).
+pip install -e .
 pip install torch==2.9.1 torchvision==0.24.1 --index-url https://download.pytorch.org/whl/cu126
-
-pip install -r requirements.txt  # transformers, etc. (torch already satisfied above)
+pip install -r requirements.txt
 ```
 
 If you only run the alignment/analysis on existing embeddings, you can skip torch
@@ -81,10 +78,9 @@ Each dataset is expected as `<root>/<identity>/<image>` (CFP additionally nests 
 | LFW (Labeled Faces in the Wild) | `lfw` | `data/lfw_cropped` (from `crop_lfw.py`) | `CFE_LFW_DIR` |
 | CASIA-WebFace | `webface` | `data/webface/casia-webface-5` | `CFE_WEBFACE_DIR` |
 
-Paper protocol: CFP uses the 10 frontal images/identity (5,000 images); LFW is
-center-cropped to 160×160 (`extraction/crop_lfw.py`); CASIA-WebFace is subsampled to
-5 images/identity (`--max-images-per-id 5`, 52,875 images). Paths live in
-`cfe/config.py` (`DATASET_IMG_DIRS`).
+CFP uses the 10 frontal images per identity; LFW is center-cropped by
+`extraction/crop_lfw.py`; CASIA-WebFace is subsampled with `--max-images-per-id 5`.
+Paths live in `cfe/config.py` (`DATASET_IMG_DIRS`).
 
 ## Models
 
@@ -98,7 +94,7 @@ from Hugging Face `transformers`.
 - **Face-specific:** ArcFace (ir101), AdaFace (ir101), MagFace (ir100), KPRPE (ViT-base)
 - **Foundation:** CLIP, ALIGN, DINOv2, SAM, BLIP-2, LLaVA, Kosmos-2, InternVL3, Florence-2, ViT
 
-**Access requirements.** The CVLface face models are gated — set `export HF_TOKEN=...`.
+**Access requirements.** The CVLface face models are gated: set `export HF_TOKEN=...`.
 MagFace needs its repo on `PYTHONPATH`
 ([IrvingMeng/MagFace](https://github.com/IrvingMeng/MagFace)) and its checkpoint at
 `checkpoints/MagFace/magface_epoch_00025.pth`. Foundation models are public.
@@ -172,8 +168,8 @@ B_hat = algo.transform(A_test)    # align held-out A embeddings into B's space
 
 | Paper artifact | Script(s) |
 |---|---|
-| Table 2 — intra-dataset | `experiments/identification_within_*.py`, `experiments/verification_within_*.py` |
-| Table 3 — cross-dataset (CFP→LFW) | `experiments/identification_cross.py`, `experiments/verification_cross.py` |
+| Table 2: intra-dataset | `experiments/identification_within_*.py`, `experiments/verification_within_*.py` |
+| Table 3: cross-dataset (CFP→LFW) | `experiments/identification_cross.py`, `experiments/verification_cross.py` |
 | Performance vs. training data (trend) | `analysis/data_efficiency.py` |
 | Dendrogram + source/sink asymmetry | `analysis/hierarchy.py` |
 | RSA/CKA, non-linear maps, Ridge-α (suppl.) | `analysis/rsa_cka.py`, `analysis/quadratic_maps.py`, `analysis/ridge_alpha.py` |

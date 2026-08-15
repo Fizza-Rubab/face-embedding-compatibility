@@ -19,7 +19,7 @@ CONFIG = {
         # ('arcface', 'clip'),
     ],
     'alphas': [0.001, 0.01, 0.1, 1.0, 10.0, 100.0],
-    # Different training ratios — key experiment: Ridge vs Linear at low data
+    # Different training ratios - key experiment: Ridge vs Linear at low data
     'train_ratios': [0.1, 0.2, 0.3, 0.5, 0.7],
     'n_seeds': 5,
     'seeds': [42, 123, 217, 7, 531],
@@ -40,7 +40,7 @@ print(json.dumps(CONFIG, indent=2))
 
 
 # ======================================================
-# UTILITIES — identical to within_dataset_cfp.py
+# UTILITIES - identical to within_dataset_cfp.py
 # ======================================================
 
 def split_by_identity(metadata, train_ratio=0.7, seed=42):
@@ -104,7 +104,7 @@ def compute_rank1(A, B, labels, chunk_size=5000):
 
 
 # ======================================================
-# SINGLE SEED — runs all train_ratios in one pass
+# SINGLE SEED - runs all train_ratios in one pass
 # ======================================================
 
 def run_single_seed(modelX, modelY, metadata, X, Y, seed):
@@ -273,7 +273,7 @@ def save_results(all_pair_results):
                         label=lbl, color=color,
                         marker='o', markersize=4, linewidth=1.5, capsize=2)
 
-            # Linear reference as dashed horizontal — same color, no label
+            # Linear reference as dashed horizontal - same color, no label
             ax.axhline(lin_mean, linestyle='--', color=color, alpha=0.6, linewidth=1)
 
         ax.set_xscale('log')
